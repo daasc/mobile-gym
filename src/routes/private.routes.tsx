@@ -18,19 +18,29 @@ import Payment from '@screens/Payment'
 import Profile from '@screens/Profile'
 import Report from '@screens/Report'
 import ReportDetails from '@screens/ReportDetails'
+import SelectWorkout from '@screens/SelectWorkout'
 import SettingWorkout from '@screens/SettingWorkout'
+import ShowWorkout from '@screens/ShowWorkout'
 import StartExercise from '@screens/StartExercise'
 import StartWorkout from '@screens/StartWorkout'
 import { useTheme } from 'native-base'
 import { Platform } from 'react-native'
 import { Icon } from 'react-native-elements'
+
 type PrivateRoutes = {
   Home: undefined
   Payment: undefined
   Historico: undefined
   Perfil: undefined
-  Exercicio: undefined
+  Exercise: {
+    workout: IWorkoutDTO
+    exercise: IExerciseDTO
+  }
   CreateWorkout: undefined
+  SelectWorkout: undefined
+  ShowWorkout: {
+    workout: IWorkoutDTO
+  }
   ExerciseInfo: {
     exercise: IExerciseDTO
   }
@@ -118,7 +128,7 @@ export default function PrivateRoutes() {
         }}
       />
       <Stack.Screen
-        name="Exercicio"
+        name="Exercise"
         component={Exercise}
         options={{
           tabBarButton: () => null,
@@ -172,6 +182,22 @@ export default function PrivateRoutes() {
       <Stack.Screen
         name="Report"
         component={Report}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Stack.Screen
+        name="SelectWorkout"
+        component={SelectWorkout}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
+
+      <Stack.Screen
+        name="ShowWorkout"
+        component={ShowWorkout}
         options={{
           tabBarButton: () => null,
         }}

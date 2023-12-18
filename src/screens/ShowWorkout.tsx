@@ -1,6 +1,4 @@
 // import Button from '@components/Button'
-import CircularProgressBar from '@components/CircleProgress'
-import { useAuth } from '@contexts/AuthContext'
 import { IExerciseDTO } from '@dtos/exercise.dto'
 import { IWorkoutDTO } from '@dtos/workout.dto'
 import NetInfo from '@react-native-community/netinfo'
@@ -22,26 +20,14 @@ type Params = {
 export default function StartWorkout() {
   const route = useRoute<RouteProp<Params, 'workout'>>()
   const workout = route.params.workout
-  const { user } = useAuth()
-  const workoutParams = user?.workout.find(item => workout._id === item._id)
   const { navigate } = useNavigation<AppNavigatorRoutesProps>()
   const [isConnect, setConnect] = useState(true)
 
   function handleGoBack() {
-    navigate('Home')
+    navigate('SelectWorkout')
   }
   const handleStartExercise = (exercise: IExerciseDTO) => {
-    navigate('StartExercise', { exercise, workout })
-  }
-
-  const checkWorkout = () => {
-    if (workoutParams.doing) {
-      return '#fb923c'
-    }
-    if (workoutParams.finished) {
-      return '#308005'
-    }
-    return '#29292E'
+    navigate('Exercise', { exercise, workout })
   }
 
   const showImage = (item: IExerciseDTO) => {
@@ -72,21 +58,6 @@ export default function StartWorkout() {
     )
   }
 
-  const countExerciseFinished = () => {
-    const amount = workoutParams.exercises.length
-    const finished = workoutParams.exercises.reduce(
-      (accumulator, currentObject) => {
-        if (currentObject.finished === true) {
-          return accumulator + 1
-        } else {
-          return accumulator
-        }
-      },
-      0,
-    )
-
-    return ((finished / amount) * 100).toFixed(0)
-  }
   useEffect(() => {
     NetInfo.addEventListener((state) => {
       if (!state.isConnected) {
@@ -124,67 +95,10 @@ export default function StartWorkout() {
       </VStack>
       <ScrollView pb={20}>
         <VStack flex={1} px={8} my={5}>
-          <HStack
-            bg="transparent"
-            minH="20"
-            p={2}
-            pr={4}
-            justifyContent="space-between"
-            rounded="md"
-            alignItems={'center'}
-            flexWrap={'wrap'}
-            borderColor={checkWorkout()}
-            borderWidth={1}
-            mb={3}
-          >
-            <VStack width={'1/5'}>
-              <CircularProgressBar
-                percent={countExerciseFinished()}
-                color={checkWorkout()}
-              ></CircularProgressBar>
-            </VStack>
-            <VStack width={'3/5'} flexWrap={'wrap'}>
-              <Text
-                flex={1}
-                width={'full'}
-                fontSize={16}
-                color={'orange.500'}
-                flexWrap={'wrap'}
-              >
-                {workoutParams.name}
-              </Text>
-              <Text
-                flex={1}
-                fontSize={16}
-                color={'orange.300'}
-                flexWrap={'wrap'}
-              >
-                {workoutParams.workoutDescription}
-              </Text>
-            </VStack>
-            <VStack width={'1/5'} style={{ justifyContent: 'space-between' }}>
-              <Text color={'white'} fontWeight={'bold'}>
-                {Math.floor(workoutParams?.time / 3600)}h{' '}
-                {Math.floor((workoutParams?.time % 3600) / 60)}m
-              </Text>
-            </VStack>
-          </HStack>
           <Text my={5} flex={1} fontSize={16} color="white" fontWeight="bold">
-            Seus exercícios
+            Exercícios
           </Text>
-          {workoutParams?.exercises.map((item, index) => {
-            let colorBorderDoing = item.doing ? '#1A93F2' : '#2C2E30'
-            let percentage = ''
-            if (item.doing) {
-              percentage = `${(
-                (item.working.series / item.series) *
-                100
-              ).toFixed(0)}%`
-            }
-            if (item.finished) {
-              colorBorderDoing = '#308005'
-              percentage = '100%'
-            }
+          {workout?.exercises.map((item, index) => {
             return (
               <TouchableOpacity
                 key={index}
@@ -198,7 +112,7 @@ export default function StartWorkout() {
                   rounded="md"
                   mb={3}
                   key={index}
-                  borderColor={colorBorderDoing}
+                  borderColor="#2C2E30"
                   borderWidth={1}
                 >
                   {showImage(item)}
@@ -206,7 +120,6 @@ export default function StartWorkout() {
                     <Heading fontSize="sm" color="white" fontFamily="heading">
                       {item.name}
                     </Heading>
-
                     <Text
                       fontSize="sm"
                       color="gray.200"
@@ -217,9 +130,6 @@ export default function StartWorkout() {
                     </Text>
                   </VStack>
                   <VStack ml={0.5}>
-                    <Text color={'#fff'} fontFamily="heading">
-                      {percentage}
-                    </Text>
                     <Icon name="chevron-right" color="#fff" size={30} />
                   </VStack>
                 </HStack>

@@ -20,7 +20,6 @@ export default function ExerciseInfo() {
   const [status, setStatus] = React.useState({})
 
   const exercise = route.params.exercise
-
   function handleGoBack() {
     navigate('CreateWorkout')
   }
@@ -89,7 +88,7 @@ export default function ExerciseInfo() {
               useNativeControls
               resizeMode={ResizeMode.CONTAIN}
               isLooping
-              onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+              onPlaybackStatusUpdate={status => setStatus(() => status)}
             />
           </View>
           <Box bg="gray.600" rounded="md" pb={4} px={4}>

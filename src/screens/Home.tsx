@@ -28,6 +28,10 @@ export default function Home() {
     navigate('CreateWorkout')
   }, [navigate])
 
+  const handleSelectWorkout = useCallback(() => {
+    navigate('SelectWorkout')
+  }, [navigate])
+
   const handleOpenExerciseDetails = (workout: IWorkoutDTO) => {
     navigate('StartWorkout', { workout })
   }
@@ -151,7 +155,7 @@ export default function Home() {
     return false
   }
 
-  const isDateFromCurrentWeek = dateString => {
+  const isDateFromCurrentWeek = (dateString: string | number | Date) => {
     const date = new Date(dateString)
     const now = new Date()
 
@@ -226,6 +230,18 @@ export default function Home() {
           </TouchableOpacity>
           {showSeeMeasurement()}
         </VStack>
+        <HStack flex={1} justifyContent={'flex-end'}>
+          <Text
+            px={8}
+            mb={5}
+            fontSize={16}
+            color="white"
+            fontWeight="bold"
+            onPress={handleSelectWorkout}
+          >
+            Selecione treinos prontos
+          </Text>
+        </HStack>
         <HStack px={8} flex={1} justifyContent={'flex-end'}>
           <Button
             loading={false}
