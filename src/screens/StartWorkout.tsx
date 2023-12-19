@@ -88,7 +88,7 @@ export default function StartWorkout() {
     return ((finished / amount) * 100).toFixed(0)
   }
   useEffect(() => {
-    NetInfo.addEventListener((state) => {
+    NetInfo.addEventListener(state => {
       if (!state.isConnected) {
         setConnect(false)
       }
@@ -126,44 +126,29 @@ export default function StartWorkout() {
         <VStack flex={1} px={8} my={5}>
           <HStack
             bg="transparent"
-            minH="20"
+            alignItems="center"
             p={2}
             pr={4}
-            justifyContent="space-between"
             rounded="md"
-            alignItems={'center'}
-            flexWrap={'wrap'}
+            mb={3}
             borderColor={checkWorkout()}
             borderWidth={1}
-            mb={3}
           >
-            <VStack width={'1/5'}>
-              <CircularProgressBar
-                percent={countExerciseFinished()}
-                color={checkWorkout()}
-              ></CircularProgressBar>
-            </VStack>
-            <VStack width={'3/5'} flexWrap={'wrap'}>
-              <Text
-                flex={1}
-                width={'full'}
-                fontSize={16}
-                color={'orange.500'}
-                flexWrap={'wrap'}
-              >
+            <CircularProgressBar
+              percent={countExerciseFinished()}
+              color={checkWorkout()}
+            ></CircularProgressBar>
+            <VStack flex={1} ml={2}>
+              <Heading fontSize="sm" color="white" fontFamily="heading">
                 {workoutParams.name}
-              </Text>
-              <Text
-                flex={1}
-                fontSize={16}
-                color={'orange.300'}
-                flexWrap={'wrap'}
-              >
+              </Heading>
+
+              <Text fontSize="sm" color="gray.200" mt={1} numberOfLines={2}>
                 {workoutParams.workoutDescription}
               </Text>
             </VStack>
-            <VStack width={'1/5'} style={{ justifyContent: 'space-between' }}>
-              <Text color={'white'} fontWeight={'bold'}>
+            <VStack ml={0.5}>
+              <Text color={'#fff'} fontFamily="heading">
                 {Math.floor(workoutParams?.time / 3600)}h{' '}
                 {Math.floor((workoutParams?.time % 3600) / 60)}m
               </Text>

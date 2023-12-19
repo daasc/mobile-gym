@@ -238,6 +238,7 @@ export default function Home() {
             color="white"
             fontWeight="bold"
             onPress={handleSelectWorkout}
+            disabled={disableButton()}
           >
             Selecione treinos prontos
           </Text>

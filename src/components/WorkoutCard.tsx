@@ -1,6 +1,6 @@
 import { IWorkoutDTO } from '@dtos/workout.dto'
 import { formatDate } from '@utils/format'
-import { HStack, Text, VStack } from 'native-base'
+import { HStack, Heading, Text, VStack } from 'native-base'
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
 import { Icon } from 'react-native-elements'
 
@@ -36,7 +36,7 @@ const WorkoutCard = ({ workout, ...rest }: WorkoutCardProps) => {
   }
   return (
     <TouchableOpacity {...rest}>
-      <HStack
+      {/* <HStack
         bg="transparent"
         minH="20"
         p={2}
@@ -68,6 +68,36 @@ const WorkoutCard = ({ workout, ...rest }: WorkoutCardProps) => {
         </VStack>
         <VStack width={'1/4'} style={{ justifyContent: 'space-between' }}>
           <Text color={'#fff'}>{checkText()}</Text>
+          <Text color={'#fff'}>{dateFinished()}</Text>
+        </VStack>
+      </HStack> */}
+
+      <HStack
+        bg="transparent"
+        alignItems="center"
+        p={2}
+        pr={4}
+        rounded="md"
+        mb={3}
+        borderColor={checkWorkout()}
+        borderWidth={1}
+      >
+        <VStack width={'1/4'}>
+          <Icon name="dumbbell" color={'#fff'} type="font-awesome-5"></Icon>
+        </VStack>
+        <VStack flex={1}>
+          <Heading fontSize="sm" color="orange.500" fontFamily="heading">
+            {workout.name}
+          </Heading>
+
+          <Text fontSize="sm" color="gray.200" mt={1} numberOfLines={2}>
+            {workout.workoutDescription}
+          </Text>
+        </VStack>
+        <VStack ml={0.5}>
+          <Text color={'#fff'} fontFamily="heading">
+            <Text color={'#fff'}>{checkText()}</Text>
+          </Text>
           <Text color={'#fff'}>{dateFinished()}</Text>
         </VStack>
       </HStack>

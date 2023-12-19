@@ -4,7 +4,14 @@ import { IWorkoutDTO } from '@dtos/workout.dto'
 import { useNavigation } from '@react-navigation/native'
 import { AppNavigatorRoutesProps } from '@routes/private.routes'
 import { api } from '@services/http'
-import { Heading, HStack, ScrollView, Text, VStack } from 'native-base'
+import {
+  Heading,
+  HStack,
+  ScrollView,
+  Text,
+  useToast,
+  VStack,
+} from 'native-base'
 import React, { useCallback, useEffect, useState } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { CheckBox, Icon } from 'react-native-elements'
@@ -14,33 +21,60 @@ export default function Home() {
   const [workouts, setWorkouts] = useState<IWorkoutDTO[]>([])
   const [selectedWorkouts, setSelected] = useState<IWorkoutDTO[]>([])
   const [loading, setLoading] = useState(false)
-  const { user } = useAuth()
+  const { user, updateUserData } = useAuth()
+  const toast = useToast()
+
   const handleOpenExerciseDetails = (workout: IWorkoutDTO) => {
     navigate('ShowWorkout', { workout })
   }
 
   const handleGoBack = () => {
     navigate('Home')
+    removeSelection()
   }
 
   const setSelection = (workout: IWorkoutDTO) => {
     const newWorkouts = [...workouts]
-    const result = newWorkouts.find((item) => item._id === workout._id)
+    const result = newWorkouts.find(item => item._id === workout._id)
     result.selected = !result?.selected || false
-    setSelected(newWorkouts.filter((item) => item.selected))
+    setSelected(newWorkouts.filter(item => item.selected))
     setWorkouts(newWorkouts)
   }
+
+  const removeSelection = useCallback(() => {
+    const newWorkouts = [...workouts]
+    const result = newWorkouts.map((item) => {
+      if (item.selected) {
+        item.selected = false
+      }
+      return item
+    })
+    setWorkouts(result)
+    setSelected([])
+  }, [workouts])
 
   const onSubmit = useCallback(async () => {
     try {
       setLoading(true)
-      await api.put(`user/workout/selected/${user?._id}`, selectedWorkouts)
+      const bodyRequest = {
+        workout: selectedWorkouts,
+      }
+      const response = await api.put(
+        `client/workout/selected/${user?._id}`,
+        bodyRequest,
+      )
+      updateUserData(response.data)
+      toast.show({
+        title: 'Treino Adicionado!',
+        description: 'Aproveite seu treino!',
+      })
     } catch (error) {
       console.log('error', error)
     } finally {
       setLoading(false)
+      removeSelection()
     }
-  }, [selectedWorkouts, user?._id])
+  }, [removeSelection, selectedWorkouts, toast, updateUserData, user?._id])
 
   const getWorkout = useCallback(async () => {
     try {
@@ -94,17 +128,20 @@ export default function Home() {
 
         {workouts.map((item, index) => (
           <View key={index} style={{ paddingHorizontal: 32 }}>
-            <TouchableOpacity onPress={() => handleOpenExerciseDetails(item)}>
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleOpenExerciseDetails(item)}
+            >
               <HStack
                 bg="transparent"
-                minH="20"
-                p={1}
-                justifyContent="space-between"
+                alignItems="center"
+                p={2}
+                pr={4}
                 rounded="md"
-                flexWrap={'wrap'}
+                mb={3}
+                key={index}
                 borderColor={'gray.500'}
                 borderWidth={1}
-                mb={3}
               >
                 <VStack width={'1/4'} alignSelf={'center'}>
                   <Icon
@@ -113,26 +150,20 @@ export default function Home() {
                     type="font-awesome-5"
                   ></Icon>
                 </VStack>
-                <VStack width={'2/4'} flexWrap={'wrap'}>
-                  <Text
-                    flex={1}
-                    width={'full'}
-                    fontSize={16}
+                <VStack flex={1}>
+                  <Heading
+                    fontSize="sm"
                     color={'orange.500'}
-                    flexWrap={'wrap'}
+                    fontFamily="heading"
                   >
                     {item.name}
-                  </Text>
-                  <Text
-                    flex={1}
-                    fontSize={16}
-                    color={'orange.300'}
-                    flexWrap={'wrap'}
-                  >
+                  </Heading>
+
+                  <Text fontSize="sm" color="gray.200" mt={1} numberOfLines={2}>
                     {item.workoutDescription}
                   </Text>
                 </VStack>
-                <VStack width={'1/4'} alignSelf={'top'}>
+                <VStack ml={0.5}>
                   <CheckBox
                     checked={item.selected}
                     onPress={() => setSelection(item)}
