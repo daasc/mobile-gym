@@ -33,11 +33,19 @@ export default function Home() {
     removeSelection()
   }
 
+  const makeFilter = useCallback(() => {
+    const filteredArray = workouts.filter((item) => {
+      return !user?.workout.some((obj) => obj._id === item._id)
+    })
+    console.log('filteredArray', filteredArray)
+    setWorkouts(filteredArray)
+  }, [user?.workout, workouts])
+
   const setSelection = (workout: IWorkoutDTO) => {
     const newWorkouts = [...workouts]
-    const result = newWorkouts.find(item => item._id === workout._id)
+    const result = newWorkouts.find((item) => item._id === workout._id)
     result.selected = !result?.selected || false
-    setSelected(newWorkouts.filter(item => item.selected))
+    setSelected(newWorkouts.filter((item) => item.selected))
     setWorkouts(newWorkouts)
   }
 
@@ -68,26 +76,37 @@ export default function Home() {
         title: 'Treino Adicionado!',
         description: 'Aproveite seu treino!',
       })
+      makeFilter()
     } catch (error) {
       console.log('error', error)
     } finally {
       setLoading(false)
       removeSelection()
     }
-  }, [removeSelection, selectedWorkouts, toast, updateUserData, user?._id])
+  }, [
+    makeFilter,
+    removeSelection,
+    selectedWorkouts,
+    toast,
+    updateUserData,
+    user?._id,
+  ])
 
   const getWorkout = useCallback(async () => {
     try {
       const response = await api.get('workout')
-      setWorkouts(response.data.result)
+      const filteredArray = response.data.result.filter((item) => {
+        return !user?.workout.some((obj) => obj._id === item._id)
+      })
+      setWorkouts(filteredArray)
     } catch (error) {
       console.log(error)
     }
-  }, [])
+  }, [user?.workout])
 
   useEffect(() => {
     getWorkout()
-  }, [])
+  }, [getWorkout])
 
   return (
     <VStack flex={1}>

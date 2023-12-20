@@ -201,15 +201,15 @@ export default function BodyMeasurement() {
       if (frontPhoto || backPhoto || sidePhoto) {
         urlsPhoto = await api.post('client/upload/body', formData)
 
-        for (const photo of urlsPhoto.data) {
+        for (const photo of urlsPhoto.data.imagePaths) {
           if (photo.originalname.includes('front')) {
-            measurement.photos.front = photo.path
+            measurement.photos.front = photo.originalname
           }
           if (photo.originalname.includes('side')) {
-            measurement.photos.side = photo.path
+            measurement.photos.side = photo.originalname
           }
           if (photo.originalname.includes('back')) {
-            measurement.photos.back = photo.path
+            measurement.photos.back = photo.originalname
           }
         }
       }
