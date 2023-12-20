@@ -28,12 +28,16 @@ export default function Home() {
     navigate('CreateWorkout')
   }, [navigate])
 
+  const handleSelectWorkout = useCallback(() => {
+    navigate('SelectWorkout')
+  }, [navigate])
+
   const handleOpenExerciseDetails = (workout: IWorkoutDTO) => {
     navigate('StartWorkout', { workout })
   }
   const disableClick = (workout: IWorkoutDTO) => {
-    const workoutDoing = user?.workout.some(workout => workout.doing)
-    const workoutFinished = user?.workout.some(workout => workout.finished)
+    const workoutDoing = user?.workout.some((workout) => workout.doing)
+    const workoutFinished = user?.workout.some((workout) => workout.finished)
     if (workoutDoing) {
       if (!workout.doing) {
         return true
@@ -42,10 +46,10 @@ export default function Home() {
 
     if (workoutFinished) {
       const workoutFinished = user?.workout.filter(
-        workout => workout.finished === true,
+        (workout) => workout.finished === true,
       )
       const result = workoutFinished?.some(
-        item => formatDate(item.timeFinished) === formatDate(new Date()),
+        (item) => formatDate(item.timeFinished) === formatDate(new Date()),
       )
 
       return workout.finished ? false : result
@@ -146,12 +150,12 @@ export default function Home() {
 
   const disableButton = () => {
     if (user?.workout) {
-      return user?.workout.some(workout => workout.doing)
+      return user?.workout.some((workout) => workout.doing)
     }
     return false
   }
 
-  const isDateFromCurrentWeek = dateString => {
+  const isDateFromCurrentWeek = (dateString: string | number | Date) => {
     const date = new Date(dateString)
     const now = new Date()
 
@@ -226,6 +230,19 @@ export default function Home() {
           </TouchableOpacity>
           {showSeeMeasurement()}
         </VStack>
+        <HStack flex={1} justifyContent={'flex-end'}>
+          <Text
+            px={8}
+            mb={5}
+            fontSize={16}
+            color="white"
+            fontWeight="bold"
+            onPress={handleSelectWorkout}
+            disabled={disableButton()}
+          >
+            Selecione treinos prontos
+          </Text>
+        </HStack>
         <HStack px={8} flex={1} justifyContent={'flex-end'}>
           <Button
             loading={false}

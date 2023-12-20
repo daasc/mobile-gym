@@ -75,7 +75,7 @@ export default function CreateWorkout() {
   )
   const removeSelection = useCallback(() => {
     const newExercises = [...exercises]
-    const result = newExercises.map(item => {
+    const result = newExercises.map((item) => {
       if (item.selected) {
         item.selected = false
       }
@@ -92,9 +92,9 @@ export default function CreateWorkout() {
 
   const setSelection = (exercise: IExerciseDTO) => {
     const newExercises = [...exercises]
-    const result = newExercises.find(item => item._id === exercise._id)
+    const result = newExercises.find((item) => item._id === exercise._id)
     result.selected = !result?.selected || false
-    setSelected(newExercises.filter(item => item.selected))
+    setSelected(newExercises.filter((item) => item.selected))
     setExercises(newExercises)
   }
 
@@ -176,9 +176,11 @@ export default function CreateWorkout() {
         </HStack>
         <SafeAreaView style={{ flex: 1 }}>
           <FlatList
-            data={exercises.filter(exercise => exercise.type === groupSelected)}
+            data={exercises.filter(
+              (exercise) => exercise.type === groupSelected,
+            )}
             keyExtractor={(item, index) => item._id + index.toString()}
-            renderItem={item => (
+            renderItem={(item) => (
               <TouchableOpacity
                 onPress={() => handleOpenExerciseDetails(item.item)}
               >

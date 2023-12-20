@@ -10,4 +10,5 @@ export interface IWorkoutDTO {
   finished: boolean
   doing: boolean
   timeFinished: Date
+  selected: boolean
 }
